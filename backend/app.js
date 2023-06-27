@@ -1,5 +1,5 @@
 const express = require('express'); //importer express
-const mongoose = require('mangoose');
+const mongoose = require('mongoose');
 
 const app = express(); //appelle/créer app, l'application
 
