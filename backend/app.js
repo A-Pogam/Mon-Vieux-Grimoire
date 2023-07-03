@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 
 app.use(express.json()); //même chose que bodyParser
 
-app.use('./api/book', bookRoutes);
+app.use('/api/book', bookRoutes);
 app.use('/api/auth', userRoutes);
   
 module.exports = app; //exporter pour qu'elle puisse être appelé comme dans le serveur node
