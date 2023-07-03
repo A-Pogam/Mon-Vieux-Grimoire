@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const bookRoutes = require('./routes/book.routes');
 const userRoutes = require('./routes/user.routes');
+const path = require('path');
 
 mongoose.connect('mongodb+srv://Idri:jU9kL0qXq6LwwJ7N@cluster0.1rc5ign.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -23,5 +24,6 @@ app.use(express.json()); //même chose que bodyParser
 
 app.use('/api/book', bookRoutes);
 app.use('/api/auth', userRoutes);
-  
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 module.exports = app; //exporter pour qu'elle puisse être appelé comme dans le serveur node
