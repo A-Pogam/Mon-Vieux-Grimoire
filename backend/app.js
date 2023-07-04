@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 
 app.use(express.json()); //même chose que bodyParser
 
-app.use('/api/book', bookRoutes);
+app.use('/api/books', bookRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

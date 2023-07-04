@@ -8,13 +8,15 @@ const MIME_TYPES = {
 
 const storage = multer.diskStorage({ // nom de fichier unique crée pour stocker 
   destination: (req, file, callback) => {
-    callback(null, 'images');
-  },
-  filename: (req, file, callback) => {
-    const name = file.originalname.split(' ').join('_');
-    const extension = MIME_TYPES[file.mimetype];
-    callback(null, name + Date.now() + '.' + extension);
-  }
-});
+    callback(null, 'images')
+},
+filename: (req, file, callback) => {
+    const bookObject = JSON.parse(req.body.book)
+    const title = bookObject.title
+    const name = title.split(' ').join('_')
+    const extension = MIME_TYPES[file.mimetype]
+    callback(null, name + '_' + Date.now() + extension)
+}
+})
 
-module.exports = multer({storage: storage}).single('image');
+module.exports = multer({ storage }).single('image');
