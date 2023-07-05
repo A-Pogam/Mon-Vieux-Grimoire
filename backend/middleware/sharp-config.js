@@ -3,27 +3,26 @@ const fs = require('fs');
 
 const optimizedImg = async (req, res, next) => {
   try {
-    console.log('Chemin du fichier JPEG :', req.file.path); // Message de débogage pour afficher le chemin du fichier JPEG
+    console.log('Chemin du fichier JPEG :', req.file.path); // Affiche le chemin du fichier JPEG dans la console (à des fins de débogage)
 
-    const optimizedImagePath = `${req.file.path}.webp`; // Chemin de l'image optimisée en format WebP
+    const optimizedImagePath = req.file.path.replace(/\.[^.]+$/, '') + '.webp'; // Construit le chemin de l'image optimisée en remplaçant l'extension par '.webp'
 
-    await sharp(req.file.path) // Utilisation de Sharp pour le traitement de l'image
-      .resize({ width: 350, height: 500 }) // Redimensionnement de l'image à une largeur de 350 pixels et une hauteur de 500 pixels
-      .webp({ quality: 80 }) // Conversion de l'image en format WebP avec une qualité de 80
-      .toFile(optimizedImagePath); // Enregistrement de l'image optimisée au chemin spécifié
+    await sharp(req.file.path) // Charge l'image à partir du chemin spécifié
+      .resize({ width: 350, height: 500 }) // Redimensionne l'image aux dimensions spécifiées
+      .webp({ quality: 80 }) // Convertit l'image en format WebP avec une qualité de 80%
+      .toFile(optimizedImagePath); // Enregistre l'image optimisée au chemin spécifié
 
-    fs.unlink(req.file.path, (err) => { // Suppression du fichier JPEG d'origine
+    fs.unlink(req.file.path, (err) => { // Supprime le fichier JPEG d'origine
       if (err) {
-        return res.status(500).json({ err: 'Impossible de supprimer le fichier' });
+        return res.status(500).json({ err: 'Impossible de supprimer le fichier' }); // Si une erreur se produit lors de la suppression du fichier, renvoie une réponse d'erreur
       }
 
-      req.file.path = `${req.protocol}://${req.get('host')}/images/${req.file.filename}.webp`; // Mise à jour du chemin de fichier dans la requête avec le chemin de l'image optimisée
-      
-      next(); // Appel du middleware suivant
+      req.file.path = `${req.protocol}://${req.get('host')}/images/${req.file.filename}.webp`; // Met à jour le chemin du fichier dans la requête pour pointer vers l'image optimisée
+      next(); // Passe à la prochaine étape du middleware
     });
   } catch (err) {
-    return res.status(500).json({ err });
+    return res.status(500).json({ err }); // Si une erreur se produit lors du traitement de l'image, renvoie une réponse d'erreur
   }
 };
 
-module.exports = optimizedImg;
+module.exports = optimizedImg; // Exporte la fonction middleware pour être utilisée dans d'autres parties de l'application
