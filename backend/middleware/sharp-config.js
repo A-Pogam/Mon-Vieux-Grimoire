@@ -2,15 +2,20 @@ const sharp = require('sharp');
 const fs = require('fs');
 
 const optimizedImg = async (req, res, next) => {
-  try {
-    console.log('Chemin du fichier JPEG :', req.file.path); // Affiche le chemin du fichier JPEG dans la console (à des fins de débogage)
+    try {
+
 
     const optimizedImagePath = req.file.path.replace(/\.[^.]+$/, '') + '.webp'; // Construit le chemin de l'image optimisée en remplaçant l'extension par '.webp'
 
     await sharp(req.file.path) // Charge l'image à partir du chemin spécifié
       .resize({ width: 350, height: 500 }) // Redimensionne l'image aux dimensions spécifiées
       .webp({ quality: 80 }) // Convertit l'image en format WebP avec une qualité de 80%
-      .toFile(optimizedImagePath); // Enregistre l'image optimisée au chemin spécifié
+      .toFile(optimizedImagePath) // Enregistre l'image optimisée au chemin spécifié
+      .then((info) => {
+      })
+      .catch((err) => {
+        throw new Error('Problème de traitement avec Sharp');
+      });
 
     fs.unlink(req.file.path, (err) => { // Supprime le fichier JPEG d'origine
       if (err) {
