@@ -19,7 +19,7 @@ exports.createBook = (req, res, next) => {
   delete bookObject._userId; // Supprime la propriété "_userId" du livre (si elle existe)
 
   const book = new Book({
-    ...bookObject, // Utilise la syntaxe spread pour copier toutes les propriétés du livre
+    ...bookObject, // Utilise la syntaxe spread pour copier toutes les propriétés du livre (facilite la manipulation des tableaux, des objets et des chaînes de caractères en fournissant un moyen concis de copier, combiner ou étendre des éléments dans d'autres contextes)
     userId: req.auth.userId, // Associe l'ID de l'utilisateur authentifié à la propriété "userId" du livre
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}.webp`, // Construit l'URL de l'image du livre en utilisant le protocole, l'hôte et le nom de fichier fournis dans la requête
     averageRating: bookObject.ratings[0].grade // Récupère la note moyenne du livre à partir des données du livre
@@ -82,6 +82,21 @@ exports.getBestBook = (req, res, next) => {
     .catch(err => res.status(400).json({ err })); // Renvoie une réponse JSON contenant l'erreur avec le code de statut 400 (Bad Request)
 };
 
-exports.deleteBook = (req, res, next) => {
-  Book.findOne({ _id: req.params.id }) // Recherche le livre spécifié par son ID
-}
+exports.deleteBook = (req, res, next) => { //supprime un livre
+  Book.findOne({ _id: req.params.id})
+      .then(book => {
+          if (book.userId != req.auth.userId) {
+              res.status(401).json({message: 'Not authorized'});
+          } else {
+              const filename = book.imageUrl.split('/images/')[1];
+              fs.unlink(`images/${filename}`, () => {
+                  Book.deleteOne({_id: req.params.id})
+                      .then(() => { res.status(200).json({message: 'Livre supprimé !'})})
+                      .catch(error => res.status(401).json({ error }));
+              });
+          }
+      })
+      .catch( error => {
+          res.status(500).json({ error });
+      });
+};  

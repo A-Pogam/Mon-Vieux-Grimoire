@@ -5,15 +5,15 @@ const userRoutes = require('./routes/user.routes'); // Importe les routes liées
 const path = require('path'); // Importe le module path pour gérer les chemins de fichiers
 
 mongoose.connect('mongodb+srv://Idri:jU9kL0qXq6LwwJ7N@cluster0.1rc5ign.mongodb.net/?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
+  { useNewUrlParser: true, // indique à Mongoose d'utiliser le nouveau moteur d'analyse de l'URL pour l'analyse de l'URL de connexion
+    useUnifiedTopology: true }) // active la nouvelle infrastructure de surveillance des serveurs de MongoDB, qui est recommandée pour une utilisation en production.
   .then(() => console.log('Connexion à MongoDB réussie !')) // Affiche un message de succès si la connexion à MongoDB est établie avec succès
   .catch(() => console.log('Connexion à MongoDB échouée !')); // Affiche un message d'erreur si la connexion à MongoDB échoue
 
 const app = express(); // Crée une instance de l'application Express
 
 app.use((req, res, next) => {
-  // Définit les en-têtes CORS pour autoriser les requêtes provenant de différentes origines
+  // Définit les en-têtes CORS pour autoriser les requêtes provenant de différentes origines HTTP
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');

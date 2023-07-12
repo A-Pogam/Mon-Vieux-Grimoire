@@ -23,7 +23,7 @@ const errorHandler = error => {
     throw error; // Lance l'erreur si elle ne concerne pas l'écoute du serveur
   }
   const address = server.address();
-  const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
+  const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port; // obtenir l'adresse et le port sur lesquels le serveur est en écoute, et pour gérer les erreurs lors de la configuration du serveur plus bas
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges.'); // Affiche un message d'erreur si le serveur nécessite des privilèges élevés pour écouter le port
